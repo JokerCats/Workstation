@@ -1,0 +1,38 @@
+子线程与主线程通信的本质：handler looper；
+
+MessageQueue队列：存放消息的地方。
+
+子线程： handler.sendMessage -> handler.enqueueMessage -> MessageQueue.enqueueMessage;
+
+将消息加入消息队列；
+
+主线程：
+程序启动，main函数执行时调用了 Looper.prepareMainLooper,
+该方法中会创建一个 Looper 对象，创建的同时初始化一个 MessageQueue 队列，
+最终运行 Looper.loop 方法，这个方法中会执行死循环（for（；；））。
+
+loop 方法中会通过调用 queue 的 next 方法接收子线程发送过来的消息。
+
+获取到消息后会通过 Handler 的 dispatchMessage 对消息进行分发，分发时会检查是否存在 handlercallbac 有则调用否则调用 handleMessahe 进行实际的处理。
+
+实际应用：卡顿监测，message 执行前后记录时间，最后进行相减，即可得出执行时间结果。
+
+-----
+
+rxjava flow 协程 ：锁机制！
+
+并发：synchronized 内置锁（JVM-Monitor）
+为什么称为内置锁：上锁与开锁的动作都来自于JVM，因此称为内置锁。
+
+是否上锁的本质：观察对象（object）是否为同一个 monitor；
+
+wait 与 sleep 的区别：
+wait 会释放锁；
+sleep 不会释放锁；
+
+wait 调用后会立即 block。
+它们都会释放占用的 CPU 资源！！
+
+notify / notifyAll 
+调用后不会立即调用 wait，一定是等 synchronized 代码块全部执行完毕后才调用！！
+
